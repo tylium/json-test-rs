@@ -50,13 +50,17 @@
 //! ```rust
 //! # use json_test::JsonTest;
 //! # use serde_json::json;
-//! # let data = json!({"score": 85});
+//! # let data = json!({"score": 85, "time": 1.4});
 //! # let mut test = JsonTest::new(&data);
 //! test.assert_path("$.score")
 //!     .is_number()
 //!     .is_greater_than(80)
+//!     .is_greater_than_f64(80.2)
 //!     .is_less_than(90)
-//!     .is_between(0, 100);
+//!     .is_less_than_f64(90.1)
+//!     .is_between(0, 100)
+//!     .assert_path("$.time")
+//!     .is_between_f64(0.0, 100.0);
 //! ```
 //!
 //! ## Array Testing

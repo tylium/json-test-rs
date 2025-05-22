@@ -77,7 +77,9 @@ test.assert_path("$.user.email")
 test.assert_path("$.user.age")
     .is_number()
     .is_greater_than(18)
-    .is_less_than(100);
+    .is_greater_than_f64(17.4)
+    .is_less_than(100)
+    .is_less_than(100.1);
 ```
 
 ### Array Operations

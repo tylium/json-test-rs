@@ -64,6 +64,7 @@ fn main() {
         .assert_path("$.stats.average_order_value")
         .is_number()
         .is_greater_than(80)
+        .is_greater_than_f64(80.4)
         .is_less_than(90)
 
         // Complex filter: find orders containing Widget product

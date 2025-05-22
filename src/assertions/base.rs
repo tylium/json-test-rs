@@ -365,6 +365,36 @@ impl<'a> JsonPathAssertion<'a> {
         }
     }
 
+    /// Asserts that the numeric value is greater than the given float value.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # use json_test::JsonTest;
+    /// # use serde_json::json;
+    /// # let data = json!({"age": 21.4});
+    /// # let mut test = JsonTest::new(&data);
+    /// test.assert_path("$.age")
+    ///     .is_greater_than_f64(18.5);
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// - Panics if no value exists at the path
+    /// - Panics if the value is not a number
+    /// - Panics if the value is not greater than the given value
+    pub fn is_greater_than_f64(&'a mut self, value: f64) -> &'a mut Self {
+        match self.current_values.get(0) {
+            Some(Value::Number(n)) if n.as_f64().map_or(false, |x| x > value) => self,
+            Some(Value::Number(n)) => panic!(
+                "Number at {} is not greater than {}\nActual: {}",
+                self.path_str, value, n
+            ),
+            Some(v) => panic!("Expected number at {}, got {:?}", self.path_str, v),
+            None => panic!("No value found at {}", self.path_str),
+        }
+    }
+
     /// Asserts that the numeric value is less than the given value.
     ///
     /// # Examples
@@ -395,6 +425,36 @@ impl<'a> JsonPathAssertion<'a> {
         }
     }
 
+    /// Asserts that the numeric value is less than the given float value.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # use json_test::JsonTest;
+    /// # use serde_json::json;
+    /// # let data = json!({"temperature": 36.8});
+    /// # let mut test = JsonTest::new(&data);
+    /// test.assert_path("$.temperature")
+    ///     .is_less_than_f64(40.0);
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// - Panics if no value exists at the path
+    /// - Panics if the value is not a number
+    /// - Panics if the value is not less than the given value
+    pub fn is_less_than_f64(&'a mut self, value: f64) -> &'a mut Self {
+        match self.current_values.get(0) {
+            Some(Value::Number(n)) if n.as_f64().map_or(false, |x| x < value) => self,
+            Some(Value::Number(n)) => panic!(
+                "Number at {} is not less than {}\nActual: {}",
+                self.path_str, value, n
+            ),
+            Some(v) => panic!("Expected number at {}, got {:?}", self.path_str, v),
+            None => panic!("No value found at {}", self.path_str),
+        }
+    }
+
     /// Asserts that the numeric value is between the given minimum and maximum values (inclusive).
     ///
     /// # Examples
@@ -416,6 +476,36 @@ impl<'a> JsonPathAssertion<'a> {
     pub fn is_between(&'a mut self, min: i64, max: i64) -> &'a mut Self {
         match self.current_values.get(0) {
             Some(Value::Number(n)) if n.as_i64().map_or(false, |x| x >= min && x <= max) => self,
+            Some(Value::Number(n)) => panic!(
+                "Number at {} is not between {} and {}\nActual: {}",
+                self.path_str, min, max, n
+            ),
+            Some(v) => panic!("Expected number at {}, got {:?}", self.path_str, v),
+            None => panic!("No value found at {}", self.path_str),
+        }
+    }
+
+     /// Asserts that the numeric value is between the given minimum and maximum float values (inclusive).
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # use json_test::JsonTest;
+    /// # use serde_json::json;
+    /// # let data = json!({"score": 85.6});
+    /// # let mut test = JsonTest::new(&data);
+    /// test.assert_path("$.score")
+    ///     .is_between_f64(0.0, 100.0);
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// - Panics if no value exists at the path
+    /// - Panics if the value is not a number
+    /// - Panics if the value is not between min and max (inclusive)
+    pub fn is_between_f64(&'a mut self, min: f64, max: f64) -> &'a mut Self {
+        match self.current_values.get(0) {
+            Some(Value::Number(n)) if n.as_f64().map_or(false, |x| x >= min && x <= max) => self,
             Some(Value::Number(n)) => panic!(
                 "Number at {} is not between {} and {}\nActual: {}",
                 self.path_str, min, max, n
